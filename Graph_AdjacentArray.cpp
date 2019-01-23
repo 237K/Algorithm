@@ -33,12 +33,13 @@
 //			  |   5   |
 //			   ΑΑΑΑΑΑΑ
 //
+//	1) 牢立青纺规侥 弊贰橇 备泅
+//
 
 #include <iostream>
 #include <fstream>
-#include <cstio>
+#include <cstdio>
 #include <vector>
-#include <algorithm>
 #include <string>
 using namespace std;
 
@@ -121,6 +122,7 @@ public:
 	}
 	void ViewGAA() const
 	{
+		cout << "=====牢立 青纺=====" << endl;
 		for (int i = 0; i < GAA_Node_Num; ++i)
 		{
 			for (int j = 0; j < GAA_Node_Num; ++j)
@@ -134,5 +136,28 @@ public:
 
 int main(void)
 {
-	ifstream in("TestCase_graph1")
+	int test_case = 1;
+	int NumberOfNode = 1;
+	int NumberOfEdge = 1;
+	int start_buffer = 0, end_buffer = 0;
+
+	ifstream in("TestCase_graph1");
+	scanf("%d", &test_case);
+	
+	for (int t = 1; t <= test_case; ++t)
+	{
+		scanf("%d %d", &NumberOfNode, &NumberOfEdge);
+		Graph_Adjacent_Array *Graph = new Graph_Adjacent_Array(NumberOfNode, NumberOfEdge);				//graph 按眉 积己
+		for (int e = 1; e <= NumberOfEdge; ++e)
+		{
+			scanf("%d %d", &start_buffer, &end_buffer);
+			Graph->AddEdge(start_buffer, end_buffer);
+		}
+
+		cout << "#" << t << endl;
+		Graph->ViewGAA;
+		Graph->ViewAdjacentNode;
+		delete Graph;
+	}
+	return 0;
 }
