@@ -13,10 +13,10 @@ using namespace std;
 int main(void)
 {
 	int test_case;
-	int Node[10] = { 0 };
-	int Edge[10] = { 0 };
+	int Node;
+	int Edge;
 	int Start, End;
-	int graph[100][100] = { 0 };
+	int graph[100][100];
 
 	ifstream in("TestCase_graph1.txt");
 
@@ -27,12 +27,21 @@ int main(void)
 		//cout << "테스트 케이스 개수 : ";
 		//cin >> test_case;
 		in >> test_case;
-		for (int i = 0; i < test_case; ++i)
+		for (int t = 1; t <= test_case; ++t)
 		{
 			//cout << "노드 개수, 간선 개수 : ";
 			//cin >> Node[i] >> Edge[i];
-			in >> Node[i] >> Edge[i];
-			for (int e = 0; e < Edge[i]; ++e)
+			in >> Node >> Edge;
+
+			for (int n = 1; n <= Node; ++n)
+			{
+				for (int m = 1; m <= Node; ++m)
+				{
+					graph[n][m] = 0;
+				}
+			}
+
+			for (int e = 1; e <= Edge; ++e)
 			{
 				//cout << "출발 노드, 타겟 노드 : ";
 				//cin >> Start >> End;
@@ -40,17 +49,14 @@ int main(void)
 				graph[Start][End] = 1;
 				graph[End][Start] = 1;
 			}
-		}
 
-		for (int i = 0; i < test_case; ++i)
-		{
-			cout << "#" << i + 1 << endl;
+			cout << "#" << t << endl;
 			cout << "=====인접 행렬=====" << endl;
-			for (int j = 0; j < Node[i]; ++j)
+			for (int n = 1; n <= Node; ++n)
 			{
-				for (int k = 0; k < Node[i]; ++k)
+				for (int m = 1; m <= Node; ++m)
 				{
-					cout << graph[j+1][k+1] << ' ';
+					cout << graph[n][m] << ' ';
 				}
 				cout << endl;
 			}
