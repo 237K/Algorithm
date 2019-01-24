@@ -52,36 +52,21 @@ public:
 	//생성자
 	explicit Graph_Adjacent_Array(int _Node_Num, int _Edge_Num) : GAA_Node_Num(_Node_Num), GAA_Edge_Num(_Edge_Num)
 	{
-		/*
-		try
+		GAA_Array = new int* [_Node_Num + 1];						//행 동적 할당
+		for (int i = 0; i < _Node_Num + 1; ++i)
 		{
-			if (_Node_Num <= 0 || _Edge_Num <= 0)					//Exception Handling
-				throw pair<int, int>(_Node_Num, _Edge_Num);
-				*/
-			GAA_Array = new int* [_Node_Num];						//행 동적 할당
-			for (int i = 1; i <= _Node_Num; ++i)
+			GAA_Array[i] = new int[_Node_Num + 1];					//각 행 마다 열 동적 할당
+			for (int j = 0; j < _Node_Num + 1; ++j)
 			{
-				GAA_Array[i] = new int[_Node_Num];					//각 행 마다 열 동적 할당
-
-				for (int j = 1; j <= _Node_Num; ++j)
-				{
-					GAA_Array[i][j] = 0;		//배열 초기화
-				}
+				GAA_Array[i][j] = 0;								//배열 초기화
 			}
-		/*
 		}
-		catch (pair<int, int> expn)
-		{
-			cout << "(error) graph 생성 실패" << endl;
-			cout << "error message : 입력받은 노드 수 : " << expn.first << " / 입력받은 간선 수 : " << expn.second << endl;
-		}
-		*/
 	}
 	
 	//소멸자
-	~Graph_Adjacent_Array()
+	~Graph_Adjacent_Array(void)
 	{
-		for (int i = 0; i < GAA_Node_Num; ++i)
+		for (int i = 0; i < GAA_Node_Num + 1; ++i)
 		{
 			delete[] GAA_Array[i];
 		}
@@ -91,25 +76,13 @@ public:
 	//Edge(간선) 추가
 	void AddEdge(int Start, int End)
 	{
-		//try
-		//{
-			//if (Start <= 0 || End <= 0)								//Exception Handling
-				//throw Start;
-
-			GAA_Array[Start][End] = 1;
-			GAA_Array[End][Start] = 1;
-		//}
-		/*
-		catch (int expn)
-		{
-			cout << "(error) 간선 추가 실패" << endl;
-			cout << "error message("<<expn<<") : 출발 노드 혹은 타겟 노드 값이 0이하 입니다." << endl;
-		}
-		*/
+		GAA_Array[Start][End] = 1;
+		GAA_Array[End][Start] = 1;
 	}
+
 	void ViewAdjacentNode(int _Node) const
 	{
-		for (int i = 0; i < GAA_Node_Num; ++i)
+		for (int i = 1; i < GAA_Node_Num + 1; ++i)
 		{
 			if (GAA_Array[_Node][i] != 0)
 			{
@@ -121,7 +94,7 @@ public:
 	void ViewAdjacentNode() const
 	{
 		cout << "=====인접 노드=====" << endl;
-		for (int i = 0; i < GAA_Node_Num; ++i)
+		for (int i = 1; i < GAA_Node_Num + 1; ++i)
 		{
 			cout << i << "의 인접 노드 : ";
 			ViewAdjacentNode(i);
@@ -131,9 +104,9 @@ public:
 	void ViewGAA() const
 	{
 		cout << "=====인접 행렬=====" << endl;
-		for (int i = 0; i < GAA_Node_Num; ++i)
+		for (int i = 1; i < GAA_Node_Num + 1; ++i)
 		{
-			for (int j = 0; j < GAA_Node_Num; ++j)
+			for (int j = 1; j < GAA_Node_Num + 1; ++j)
 			{
 				cout << GAA_Array[i][j] << ' ';
 			}
@@ -160,27 +133,57 @@ int main(void)
 	cout << "Test Case 개수 : ";
 	cin >> test_case;
 	Graph_Adjacent_Array *Graph[5];
+
 	for (int t = 1; t <= test_case; ++t)
 	{
 		//scanf("%d %d", &NumberOfNode, &NumberOfEdge);
 		//in >> NumberOfNode >> NumberOfEdge;
+		try
+		{
 		cout << "노드 개수, 간선 개수 : ";
 		cin >> NumberOfNode >> NumberOfEdge;
+
+			if (NumberOfNode <= 1 || NumberOfEdge <= 0)						//Exception Handling
+				throw pair<int, int>(NumberOfNode, NumberOfEdge);
+
 		Graph[t] = new Graph_Adjacent_Array(NumberOfNode, NumberOfEdge);				//graph 객체 생성
-		for (int e = 1; e <= NumberOfEdge; ++e)
-		{
-			//scanf("%d %d", &start_buffer, &end_buffer);
-			//in >> start_buffer >> end_buffer;
-			cout << "시작 노드, 타겟 노드 : ";
-			cin >> start_buffer >> end_buffer;
-			Graph[t]->AddEdge(start_buffer, end_buffer);
+
+			for (int e = 1; e <= NumberOfEdge; ++e)
+			{
+				//scanf("%d %d", &start_buffer, &end_buffer);
+				//in >> start_buffer >> end_buffer;
+				try
+				{
+				cout << "시작 노드, 타겟 노드 : ";
+				cin >> start_buffer >> end_buffer;
+
+					if (start_buffer <= 0 || end_buffer <= 0)
+						throw pair<int, int>(start_buffer, end_buffer);
+
+				Graph[t]->AddEdge(start_buffer, end_buffer);
+				}
+				catch (pair<int, int> expn2)
+				{
+					cout << "(error) 간선 추가 실패" << endl;
+					cout << "error message : " << "출발노드 : " << expn2.first << "타겟노드 : " << expn2.second << endl;
+				}
+			}
 		}
-		cout << "#" << t << endl;
-		Graph[t]->ViewGAA();
-		Graph[t]->ViewAdjacentNode();
+		catch (pair<int, int> expn)
+		{
+			cout << "#" << t << "(error) graph 생성 실패" << endl;
+			cout << "error message : 입력받은 노드 수 : " << expn.first << " / 입력받은 간선 수 : " << expn.second << endl;
+		}
 	}
 
-	for (int t = 1; t <= test_case; ++t)
+	for (int i = 1; i < test_case + 1; ++i)
+	{
+		cout << "#" << i << endl;
+		Graph[i]->ViewGAA();
+		Graph[i]->ViewAdjacentNode();
+	}
+
+	for (int t = 0; t < test_case; ++t)
 	{
 		delete Graph[t];
 	}
