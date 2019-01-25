@@ -39,10 +39,8 @@
 
 #include <iostream>
 #include <fstream>
-#include <stdio.h>
 #include <vector>
 #include <algorithm>
-#include <iterator>
 using namespace std;
 
 class Graph_Adjacent_List
@@ -80,17 +78,30 @@ public:
 		cout << "call AddEdge" << endl;
 		GAL_Vector[_Start].push_back(pair<int, int> (_End, _Weight));
 		GAL_Vector[_End].push_back(pair<int, int> (_Start, _Weight));
+		
+		sort(GAL_Vector[_Start].begin(), GAL_Vector[_Start].end());							//less로 정렬
+		sort(GAL_Vector[_End].begin(), GAL_Vector[_End].end());
 	}
 
 	//인접 노드 출력
 	void ViewAdjacentNode() const															//노드를 출력하는 함수
 	{																						//노드 내부를 출력하기 위한 함수는 따로 구현하여 호출
-		for (int VAN = 1; VAN <= Node_Num; ++VAN)
+		try
 		{
-			cout << VAN << "의 인접노드 : ";
-			ViewAdjacentNode(GAL_Vector[VAN]);												//함수 내에서 오버로딩된 ViewAdjacentNode 함수를 호출
+			if (Node_Num <= 1)
+				throw Node_Num;
+
+			for (int VAN = 1; VAN <= Node_Num; ++VAN)
+			{
+				cout << VAN << "의 인접노드 : ";
+				ViewAdjacentNode(GAL_Vector[VAN]);												//함수 내에서 오버로딩된 ViewAdjacentNode 함수를 호출
+			}
+			cout << endl;
 		}
-		cout << endl;
+		catch (const int expn)
+		{
+			cout << "error" << endl << "error message  Node는 1개 이하일 수 없습니다. 입력받은 Node의 개수 : " << expn << endl;
+		}
 	}
 
 	void ViewAdjacentNode(const vector<pair<int, int>>& _GAL) const							//각 노드의 내부를 출력하기 위한 함수
@@ -112,7 +123,7 @@ int main(void)
 	int Start_Buffer, End_Buffer;
 	Graph_Adjacent_List *Graph[100];
 
-	ifstream in("TestCase_graph1.txt");
+	ifstream in("TestCase_graph2.txt");
 
 	if (!in.is_open())
 		cout << "파일을 찾을 수 없습니다." << endl;
@@ -149,6 +160,7 @@ int main(void)
 		catch (pair<int, int> Node_Expn)
 		{
 			cout << "error" << endl << "error message  Number of Node : " << Node_Expn.first << " Number of Edge : " << Node_Expn.second << endl;
+			return 0;
 		}
 	}
 	for (int tc = 1; tc <= test_case; ++tc)
