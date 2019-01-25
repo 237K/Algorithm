@@ -62,6 +62,7 @@ public:
 		{
 			GAL_Vector[init].clear();
 		}
+		cout << "call constructor" << endl;
 	}
 
 	Graph_Adjacent_List() :Node_Num(0), Edge_Num(0), Weight(0) {}
@@ -69,12 +70,14 @@ public:
 	//소멸자
 	~Graph_Adjacent_List()
 	{
+		cout << "call destructor" << endl;
 		delete[] GAL_Vector;
 	}
 
 	//간선 추가
 	void AddEdge(int _Start, int _End, int _Weight = 1)
 	{
+		cout << "call AddEdge" << endl;
 		GAL_Vector[_Start].push_back(pair<int, int> (_End, _Weight));
 		GAL_Vector[_End].push_back(pair<int, int> (_Start, _Weight));
 	}
@@ -94,8 +97,7 @@ public:
 	{
 		for (vector<pair<int, int>>::size_type i = 0; i < _GAL.size(); ++i)
 		{
-			pair<int, int> recent_pair = _GAL.front();
-			cout << "(" << recent_pair.first << ", " << recent_pair.second << ") ";
+			cout << "(" << _GAL[i].first << ", " << _GAL[i].second << ") ";
 		}
 		cout << endl;
 	}
@@ -151,7 +153,7 @@ int main(void)
 	}
 	for (int tc = 1; tc <= test_case; ++tc)
 	{
-		cout << "#" << test_case << endl;
+		cout << "#" << tc << endl;
 		Graph[tc]->ViewAdjacentNode();
 	}
 
