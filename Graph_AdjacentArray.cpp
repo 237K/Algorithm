@@ -38,6 +38,7 @@
 #include <fstream>
 #include <stdio.h>
 #include <vector>
+#include <time.h>
 using namespace std;
 
 class Graph_Adjacent_Array
@@ -119,11 +120,14 @@ public:
 
 int main(void)
 {
+	clock_t timer_start, timer_end;
+	double ExecutionTime;
 	int test_case;
 	int NumberOfNode;
 	int NumberOfEdge;
 	int start_buffer, end_buffer;
 
+	timer_start = clock();
 	ifstream in("TestCase_graph1.txt");
 
 	if (!in.is_open())
@@ -190,6 +194,10 @@ int main(void)
 	}
 
 	in.close();
+	
+	timer_end = clock();
+	ExecutionTime = (double)(timer_end - timer_start);
+	cout << endl << "Execution Time : " << ExecutionTime <<"ms"<< endl;
 
 	return 0;
 }

@@ -41,6 +41,7 @@
 #include <fstream>
 #include <vector>
 #include <algorithm>
+#include <time.h>
 using namespace std;
 
 class Graph_Adjacent_List
@@ -116,6 +117,8 @@ public:
 
 int main(void)
 {
+	clock_t timer_start, timer_end;
+	double ExecutionTime;
 	int test_case;
 	int NumOfNode;
 	int NumOfEdge;
@@ -123,7 +126,9 @@ int main(void)
 	int Start_Buffer, End_Buffer;
 	Graph_Adjacent_List *Graph[100];
 
-	ifstream in("TestCase_graph2.txt");
+	timer_start = clock();
+
+	ifstream in("TestCase_graph1.txt");
 
 	if (!in.is_open())
 		cout << "파일을 찾을 수 없습니다." << endl;
@@ -175,6 +180,10 @@ int main(void)
 	}
 
 	in.close();
+
+	timer_end = clock();
+	ExecutionTime = (double)(timer_end - timer_start);
+	cout << endl << "Execution Time : " << ExecutionTime << "ms" << endl;
 
 	return 0;
 }
