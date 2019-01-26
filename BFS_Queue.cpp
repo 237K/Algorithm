@@ -62,10 +62,11 @@ public:
 
 			for (vector<int>::size_type i = 0; i < GV[Current_Node].size(); ++i)
 			{
-				if (!Check[Current_Node])
+				int Next_Node = GV[Current_Node][i];
+				if (!Check[Next_Node])
 				{
-					Q.push(GV[Current_Node][i]);
-					Check[Current_Node] = true;
+					Q.push(Next_Node);
+					Check[Next_Node] = true;
 				}
 			}
 		}
@@ -99,6 +100,10 @@ int main(void)
 	graph.BFS(Start_Vertex);
 
 	in.close();
+
+	timer_end = clock();
+	timer = (double)(timer_end - timer_start);
+	cout << "Execution Time : " << timer << "ms" << endl;
 
 	return 0;
 }
