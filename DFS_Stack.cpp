@@ -93,14 +93,29 @@ int main(void)
 	if (!in.is_open())
 		cout << "파일을 찾을 수 없습니다." << endl;
 
-	in >> NumOfNode >> NumOfEdge >> Start_Vertex;
-	Graph graph(NumOfNode, NumOfEdge);
-	for (int i = 1; i <= NumOfEdge; ++i)
+	try
 	{
-		in >> Start_Node >> End_Node;
-		graph.AddEdge(Start_Node, End_Node);
+		in >> NumOfNode >> NumOfEdge >> Start_Vertex;
+		Graph graph(NumOfNode, NumOfEdge);
+
+		if (NumOfNode <= 1 || NumOfEdge <= 0)
+			throw pair<int, int>(NumOfNode, NumOfEdge);
+
+		for (int i = 1; i <= NumOfEdge; ++i)
+		{
+			in >> Start_Node >> End_Node;
+
+			if (Start_Node == End_Node || Start_Node <= 0 || End_Node <= 0)
+				throw pair<int, int>(Start_Node, End_Node);
+
+			graph.AddEdge(Start_Node, End_Node);
+		}
+		graph.DFS(Start_Vertex);
 	}
-	graph.DFS(Start_Vertex);
+	catch (pair<int, int> expn)
+	{
+		cout << "(error) " << expn.first << ", " << expn.second << endl;
+	}
 
 	in.close();
 
