@@ -57,6 +57,19 @@ public:
 	{
 		BFG[_Start][_End] = _Weight;
 	}
+	void PrintGraph() const
+	{
+		cout << "=====그래프 출력=====" << endl<<endl;
+		for (int i = 1; i <= Node; ++i)
+		{
+			for (int j = 1; j <= Node; ++j)
+			{
+				cout << BFG[i][j] << ' ';
+			}
+			cout << endl;
+		}
+	}
+
 	void BF(int _Start)
 	{
 		Distance[_Start] = 0;
@@ -66,23 +79,26 @@ public:
 			{
 				if (BFG[i][j] != 0 && Distance[j] > Distance[i] + BFG[i][j])
 				{
-					Distance[i] = Distance[i] + BFG[i][j];
+					Distance[j] = Distance[i] + BFG[i][j];
+					if (i == Node)
+						MinusCycle = true;
 				}
 			}
 		}
 		PrintResult();
 	}
+
 	void PrintResult() const
 	{
 		if (MinusCycle)
 			cout << "-1" << endl;
-		else if(!MinusCycle)
+		if(!MinusCycle)
 		{
 			for (int i = 2; i <= Node; ++i)
 			{
 				if (Distance[i] != INIT_NODE)
 					cout << "1에서 출발하여 " << i << "로 가는 최단경로는 " << Distance[i] << " 입니다." << endl;
-				else if (Distance[i] == INIT_NODE)
+				if (Distance[i] == INIT_NODE)
 					cout << "1에서 출발하여 " << i << "로 가는 경로는 없습니다." << endl;
 			}
 		}
@@ -99,7 +115,7 @@ int main(void)
 
 	timer_start = clock();
 
-	ifstream in("TestCase_BellmanFord1.txt");
+	ifstream in("TestCase_BellmanFord2.txt");
 
 	if (!in.is_open())
 		cout << "파일을 찾을 수 없습니다." << endl;
@@ -111,6 +127,8 @@ int main(void)
 		in >> Start_Node >> End_Node >> Weight;
 		graph.AddEdge(Start_Node, End_Node, Weight);
 	}
+
+	graph.PrintGraph();
 
 	graph.BF(1);
 
