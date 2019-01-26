@@ -7,89 +7,84 @@
 //
 //	BAEKJOON #11657 타임머신
 //
+
 #include <iostream>
 #include <fstream>
-#include <vector>
-#include <algorithm>
-#include <stack>
 #include <time.h>
 using namespace std;
-
-bool Pair_Less(pair<int, int> p1, pair<int, int> p2)						//vector sort()할 때 pair.first를 기준으로 정렬하기 위한 Predicate 정의
-{
-	return p1.first > p2.first ? true : false;
-}
 
 class Graph
 {
 private:
 	int Node;
-	vector<pair<int, int>> *BFG;
-	vector<int> Distance;
-	bool *Check;
-	stack<int> Stack;
+	int Edge;
+	int **BFG;
+	int *Distance;
+	bool MinusCycle;
 public:
-	const static int INIT_NODE = 9999999;
+	const static int INIT_NODE = 2147000000;
 	const static int MAX_CITY = 500;
 	const static int MAX_EDGE = 6000;
 public:
 	Graph(int _Node) : Node(_Node)
 	{
-		BFG = new vector<pair<int, int>>[_Node + 1];
-		Check = new bool[_Node + 1];
-		Distance.resize(_Node + 1, INIT_NODE);
-		Distance[0] = 0;
+		BFG = new int*[_Node + 1];
 		for (int i = 0; i < _Node + 1; ++i)
 		{
-			BFG[i].clear();
-			Check[i] = false;
+			BFG[i] = new int[_Node + 1];
 		}
+		Distance = new int[_Node + 1];
+
+		for (int i = 1; i < _Node + 1; ++i)
+		{
+			Distance[i] = INIT_NODE;
+			for (int j = 1; j < _Node + 1; ++j)
+			{
+				BFG[i][j] = 0;
+			}
+		}
+		MinusCycle = false;
 	}
 	~Graph()
 	{
-		delete[] BFG;
-		delete[] Check;
+		for (int i = 0; i < Node + 1; ++i)
+		{
+			delete[] BFG[i];
+		}
+		delete[] Distance;
 	}
 	void AddEdge(int _Start, int _End, int _Weight)
 	{
-		BFG[_Start].push_back(pair<int, int>(_End, _Weight));
-		sort(BFG[_Start].begin(), BFG[_Start].end(), Pair_Less);
+		BFG[_Start][_End] = _Weight;
 	}
 	void BF(int _Start)
 	{
-		cout << "방문 순서 : ";
 		Distance[_Start] = 0;
-		Stack.push(_Start);
-		Check[_Start] = true;
-		
-		while (!Stack.empty())
+		for (int i = 1; i <= Node; ++i)
 		{
-			int Current_Node = Stack.top();
-			Stack.pop();
-			cout<<Current_Node << ' ';
-
-			for (int i = 0; i < BFG[Current_Node].size(); ++i)
+			for (int j = 1; j <= Node; ++j)
 			{
-				int Next_Node = BFG[Current_Node][i].first;
-				if (!Check[Next_Node])
+				if (BFG[i][j] != 0 && Distance[j] > Distance[i] + BFG[i][j])
 				{
-					if(Distance[Next_Node] > Distance[Current_Node] + BFG[Current_Node][i].second)
-					{
-						Distance[Next_Node] = Distance[Current_Node] + BFG[Current_Node][i].second;
-					}
-					Stack.push(Current_Node);
-					Stack.push(Next_Node);
-					Check[Next_Node] = true;
+					Distance[i] = Distance[i] + BFG[i][j];
 				}
 			}
 		}
-		cout << endl;
+		PrintResult();
 	}
-	void PrintDistance() const
+	void PrintResult() const
 	{
-		for (int i = 2; i < Distance.size(); ++i)
+		if (MinusCycle)
+			cout << "-1" << endl;
+		else if(!MinusCycle)
 		{
-			cout << "1번 도시에서 " << i << "번 도시로 가는 최단경로 : " << Distance[i] << endl;
+			for (int i = 2; i <= Node; ++i)
+			{
+				if (Distance[i] != INIT_NODE)
+					cout << "1에서 출발하여 " << i << "로 가는 최단경로는 " << Distance[i] << " 입니다." << endl;
+				else if (Distance[i] == INIT_NODE)
+					cout << "1에서 출발하여 " << i << "로 가는 경로는 없습니다." << endl;
+			}
 		}
 	}
 };
@@ -105,18 +100,19 @@ int main(void)
 	timer_start = clock();
 
 	ifstream in("TestCase_BellmanFord1.txt");
+
 	if (!in.is_open())
 		cout << "파일을 찾을 수 없습니다." << endl;
 
 	in >> NumOfNode >> NumOfEdge;
 	Graph graph(NumOfNode);
-	for (int i = 1; i <= NumOfEdge; ++i)
+	for (int e = 1; e <= NumOfEdge; ++e)
 	{
 		in >> Start_Node >> End_Node >> Weight;
 		graph.AddEdge(Start_Node, End_Node, Weight);
 	}
+
 	graph.BF(1);
-	graph.PrintDistance();
 
 	in.close();
 
