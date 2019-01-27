@@ -24,9 +24,9 @@ class Graph
 {
 private:
 	int Node;
-	vector<pair<int, int>> *BFG;
-	vector<int> Distance;
-	bool NegativeCycle;
+	vector<pair<int, int>> *BFG;											//pair.first는 도착노드, pair.second는 가중치
+	vector<int> Distance;													//도착노드까지의 거리를 저장하는 vector
+	bool NegativeCycle;														//음의 사이클 존재여부 확인을 위한 변수
 public:
 	const static int INIT_NODE = 237000000;
 	const static int MAX_CITY = 500;
@@ -35,7 +35,7 @@ public:
 	Graph(int _Node) : Node(_Node)
 	{
 		BFG = new vector<pair<int, int>>[_Node + 1];
-		Distance.resize(_Node + 1, INIT_NODE);
+		Distance.resize(_Node + 1, INIT_NODE);								//모든 Distance를 무한대로 초기화
 		for (int i = 0; i < _Node + 1; ++i)
 		{
 			BFG[i].clear();
@@ -47,24 +47,25 @@ public:
 	{
 		delete[] BFG;
 	}
-	void AddEdge(int _Start, int _End, int _Weight)
+	void AddEdge(int _Start, int _End, int _Weight)							//간선 추가
 	{
-		BFG[_Start].push_back(pair<int, int>(_End, _Weight));
-		sort(BFG[_Start].begin(), BFG[_Start].end(), Pair_Less);
+		BFG[_Start].push_back(pair<int, int>(_End, _Weight));				//방향성 있는 그래프
+		sort(BFG[_Start].begin(), BFG[_Start].end(), Pair_Less);			//도착노드를 기준으로 less 정렬
 	}
 	void BF(int _Start)
 	{
 		Distance[_Start] = 0;
 
-			for (int i = 1; i <= Node; ++i)
+			for (int i = 1; i <= Node; ++i)																		//N까지 가는 최단경로는 N-1번만 돌아도 결정됨. 음의 사이클 확인을 위해 한번 더 돔
 			{
-				for (vector<pair<int, int>>::iterator iter = BFG[i].begin(); iter != BFG[i].end(); ++iter)
+				for (vector<pair<int, int>>::iterator iter = BFG[i].begin(); iter != BFG[i].end(); ++iter)		//각 노드와 연결된 노드들을 순회하다가
 				{
-					if (Distance[i] != INIT_NODE && Distance[iter->first] > (Distance[i] + iter->second))
+					//출발노드에서 지금노드까지 거리가 무한대가 아니고 && 지금노드에서 경유노드까지 가는 거리랑 경유노드에서 도착노드까지 가는 거리를 합쳤을 때, 지금 노드에서 바로 도착노드까지 가는 것보다 작으면 갱신
+					if (Distance[i] != INIT_NODE && Distance[iter->first] > (Distance[i] + iter->second))		
 					{
 						Distance[iter->first] = Distance[i] + iter->second;
-						if (i == Node)
-							NegativeCycle = true;
+						if (i == Node)													//Node가 N개인데, N번째에도 값이 갱신된다는 것은
+							NegativeCycle = true;										//도착노드에서 출발노드를 경유하고 다시 도착노드로 가는 시간이 갱신된다는 것이므로 음의 사이클이 존재함
 					}
 				}
 		}
