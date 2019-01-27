@@ -115,7 +115,7 @@ int main(void)
 
 	timer_start = clock();
 
-	ifstream in("TestCase_BellmanFord2.txt");
+	ifstream in("TestCase_BellmanFord3.txt");
 
 	if (!in.is_open())
 		cout << "파일을 찾을 수 없습니다." << endl;

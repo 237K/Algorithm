@@ -26,29 +26,26 @@ private:
 	int Node;
 	vector<pair<int, int>> *BFG;
 	vector<int> Distance;
-	bool *Check;
-	stack<int> Stack;
+	bool NegativeCycle;
 public:
-	const static int INIT_NODE = 9999999;
+	const static int INIT_NODE = 237000000;
 	const static int MAX_CITY = 500;
 	const static int MAX_EDGE = 6000;
 public:
 	Graph(int _Node) : Node(_Node)
 	{
 		BFG = new vector<pair<int, int>>[_Node + 1];
-		Check = new bool[_Node + 1];
 		Distance.resize(_Node + 1, INIT_NODE);
-		Distance[0] = 0;
 		for (int i = 0; i < _Node + 1; ++i)
 		{
 			BFG[i].clear();
-			Check[i] = false;
 		}
+		NegativeCycle = false;
+		PrintCurrentDistance();
 	}
 	~Graph()
 	{
 		delete[] BFG;
-		delete[] Check;
 	}
 	void AddEdge(int _Start, int _End, int _Weight)
 	{
@@ -57,49 +54,46 @@ public:
 	}
 	void BF(int _Start)
 	{
-		cout << "방문 순서 : ";
 		Distance[_Start] = 0;
-		Stack.push(_Start);
-		Check[_Start] = true;
-		
-		while (!Stack.empty())
-		{
-			int Current_Node = Stack.top();
-			Stack.pop();
-			cout<<Current_Node << ' ';
 
-			for (int i = 0; i < BFG[Current_Node].size(); ++i)
+			for (int i = 1; i <= Node; ++i)
 			{
-				int Next_Node = BFG[Current_Node][i].first;
-				if (!Check[Next_Node])
+				for (vector<pair<int, int>>::iterator iter = BFG[i].begin(); iter != BFG[i].end(); ++iter)
 				{
-					if(Distance[Next_Node] > Distance[Current_Node] + BFG[Current_Node][i].second)
+					if (Distance[i] != INIT_NODE && Distance[iter->first] > (Distance[i] + iter->second))
 					{
-						Distance[Next_Node] = Distance[Current_Node] + BFG[Current_Node][i].second;
-						if (Distance[Next_Node] <= 0)
-						{
-							cout << "-1" << endl;
-							break;
-						}
+						Distance[iter->first] = Distance[i] + iter->second;
+						if (i == Node)
+							NegativeCycle = true;
 					}
-					Stack.push(Current_Node);
-					Stack.push(Next_Node);
-					Check[Next_Node] = true;
 				}
-			}
 		}
-		cout << endl;
+		PrintCurrentDistance();
 		PrintDistance();
 	}
 	void PrintDistance() const
 	{
-		for (int i = 2; i < Distance.size(); ++i)
+		if (NegativeCycle)
+			cout << "음의 사이클이 존재합니다." << endl;
+		else
 		{
-			if (Distance[i] != INIT_NODE)
-				cout << "1번 도시에서 " << i << "번 도시로 가는 최단경로 : " << Distance[i] << endl;
-			if (Distance[i] == INIT_NODE)
-				cout << "1번 도시에서 " << i << "번 도시로 가는 최단경로 : -1" << endl;
+			for (int i = 2; i < Distance.size(); ++i)
+			{
+				if (Distance[i] != INIT_NODE)
+					cout << "1번 도시에서 " << i << "번 도시로 가는 최단경로 : " << Distance[i] << endl;
+				if (Distance[i] == INIT_NODE)
+					cout << "1번 도시에서 " << i << "번 도시로 가는 최단경로 : -1" << endl;
+			}
 		}
+	}
+	void PrintCurrentDistance() const
+	{
+		for (vector<int>::size_type i = 0; i < Distance.size(); ++i)
+		{
+			cout << "[" << i << "] " << Distance[i] << endl;
+		}
+		cout << "is Negative Cycle ? " << NegativeCycle << endl;
+		cout << endl;
 	}
 };
 
@@ -113,7 +107,7 @@ int main(void)
 
 	timer_start = clock();
 
-	ifstream in("TestCase_BellmanFord1.txt");
+	ifstream in("TestCase_BellmanFord4.txt");
 	if (!in.is_open())
 		cout << "파일을 찾을 수 없습니다." << endl;
 
