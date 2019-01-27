@@ -11,7 +11,6 @@
 #include <fstream>
 #include <vector>
 #include <algorithm>
-#include <stack>
 #include <time.h>
 using namespace std;
 

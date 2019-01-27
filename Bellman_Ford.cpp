@@ -22,7 +22,7 @@ private:
 	int *Distance;
 	bool MinusCycle;
 public:
-	const static int INIT_NODE = 2147000000;
+	const static int INIT_NODE = 214700000;
 	const static int MAX_CITY = 500;
 	const static int MAX_EDGE = 6000;
 public:
