@@ -22,7 +22,7 @@ bool Pair_Less(pair<int, int> p1, pair<int, int> p2)						//vector sort()할 때 p
 class Graph
 {
 private:
-	int Node;
+	const int Node;
 	vector<pair<int, int>> *BFG;											//pair.first는 도착노드, pair.second는 가중치
 	vector<int> Distance;													//도착노드까지의 거리를 저장하는 vector
 	bool NegativeCycle;														//음의 사이클 존재여부 확인을 위한 변수
@@ -31,7 +31,7 @@ public:
 	const static int MAX_CITY = 500;
 	const static int MAX_EDGE = 6000;
 public:
-	Graph(int _Node) : Node(_Node)
+	Graph(const int _Node) : Node(_Node)
 	{
 		BFG = new vector<pair<int, int>>[_Node + 1];
 		Distance.resize(_Node + 1, INIT_NODE);								//모든 Distance를 무한대로 초기화
