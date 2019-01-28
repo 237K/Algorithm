@@ -33,7 +33,7 @@ public:
 class Graph
 {
 private:
-	int Node;
+	const int Node;
 	vector<pair<int, int>> *DG;
 	vector<int> Distance;
 	bool *Check;
@@ -41,7 +41,7 @@ private:
 private:
 	const static int INF = 2137000000;
 public:
-	Graph(int _Node) : Node(_Node)
+	Graph(const int _Node) : Node(_Node)
 	{
 		DG = new vector<pair<int, int>> [_Node + 1];
 		Check = new bool [_Node + 1];
@@ -49,9 +49,9 @@ public:
 		for (int i = 0; i < _Node + 1; ++i)
 		{
 			DG[i].clear();
-			Distance[i] = INF;
 			Check[i] = false;
 		}
+		Distance.resize(_Node + 1, INF);
 	}
 	~Graph()
 	{
