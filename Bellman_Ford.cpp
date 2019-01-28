@@ -16,8 +16,7 @@ using namespace std;
 class Graph
 {
 private:
-	int Node;
-	int Edge;
+	const int Node;
 	int **BFG;
 	int *Distance;
 	bool MinusCycle;
@@ -26,7 +25,7 @@ public:
 	const static int MAX_CITY = 500;
 	const static int MAX_EDGE = 6000;
 public:
-	Graph(int _Node) : Node(_Node)
+	Graph(const int _Node) : Node(_Node)
 	{
 		BFG = new int*[_Node + 1];
 		for (int i = 0; i < _Node + 1; ++i)
