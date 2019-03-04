@@ -34,19 +34,76 @@
 #include <vector>
 using namespace std;
 
+void MergeTwoArea(int arr[], int left, int mid, int right)
+{
+	int leftIdx = left;
+	int rightIdx = mid + 1;
+	int *tempArr = new int[right + 1];
+	int curIdx = left;
+	while (leftIdx <= mid && rightIdx <= right)
+	{
+		if (arr[leftIdx] <= arr[rightIdx])
+		{
+			tempArr[curIdx] = arr[leftIdx];
+			leftIdx++;
+		}
+		else
+		{
+			tempArr[curIdx] = arr[rightIdx];
+			rightIdx++;
+		}
+		curIdx++;
+	}
+
+	if (leftIdx > mid)
+	{
+		for (int i = rightIdx; i <= right; ++i, curIdx++)
+		{
+			tempArr[curIdx] = arr[i];
+		}
+	}
+	else
+	{
+		for (int i = leftIdx; i <= mid; ++i, curIdx++)
+		{
+			tempArr[curIdx] = arr[i];
+		}
+	}
+
+	for (int i = left; i <= right; ++i)
+	{
+		arr[i] = tempArr[i];
+	}
+	delete[] tempArr;
+}
+
+void MergeSort(int arr[], int left, int right)
+{
+	int mid;
+	
+	if (left < right)
+	{
+		mid = (left + right) / 2;
+		MergeSort(arr, left, mid);
+		MergeSort(arr, mid + 1, right);
+		MergeTwoArea(arr, left, mid, right);
+	}
+}
 
 int main(void)
 {
-	int arr[5] = { 2, 5, 3, 1, 4 };
+	int arr[10] = { 2, 5, 3, 1, 4, 8, 9, 6, 10, 7 };
 
-	for (int i = 0; i < 5; ++i)
+	for (int i = 0; i < 10; ++i)
 		cout << arr[i] << ' ';
 	cout << endl << endl;
 
-	cout << "Heap Sort" << endl << endl;
-	HeapSort(arr, sizeof(arr) / sizeof(int), Priority);
-	for (int i = 0; i < 5; ++i)
+	cout << "Merge Sort" << endl << endl;
+	MergeSort(arr, 0, 9);
+
+	for (int i = 0; i < 10; ++i)
 		cout << arr[i] << ' ';
 	cout << endl << endl;
+
 	return 0;
 }
