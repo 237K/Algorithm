@@ -28,6 +28,8 @@
 //
 //		<5. 병합 정렬 (Merge Sort)>
 //			1) 분할 정복(divide and conquer)
+//			2) 성능평가
+//				- 비교연산 : O(nlog2n) / 이동연산 : O(nlog2n) : 데이터의 수가 n개일때 병합 과정은 log2의 n만큼 진행되므로
 //
 
 #include <iostream>
