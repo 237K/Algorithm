@@ -9,6 +9,8 @@
 //			   찾는 값이 있을 확률이 높은 위치에 대한 근사치를 비례적인 방법으로 추정하여 설정하는 것
 //			2) 데이터의 값과 그 데이터가 저장된 위치의 인덱스 값이 비례한다고 가정
 //			3) 찾는 데이터값을 x라고 할 때, x의 idx = (((x - arr[low]) / (arr[high] - arr[low])) * (high - low)) + low
+//		  → 4) 탐색대상이 존재하지 않는 경우 탈출조건을 만족시키지 못해서 제대로 동작하지 못할 수 있음.
+//			   
 //
 
 #include <iostream>
@@ -17,7 +19,9 @@ using namespace std;
 int InterpolationSearch(int arr[], int first, int last, int target)
 {
 	int mid;
-	if (first > last)
+	//if (first > last)
+	//	return -1;
+	if (arr[first] > target || arr[last] < target)
 		return -1;
 
 	else
