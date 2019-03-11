@@ -47,7 +47,7 @@ int main(void)
 	Manager manager;
 	int eNum;
 	int eAge;
-	
+
 	cout << "사번과 나이 입력 : ";
 	cin >> eNum >> eAge;
 	manager.Input(eNum, eAge);
