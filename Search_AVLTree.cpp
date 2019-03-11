@@ -42,14 +42,12 @@ class Node
 	friend class BinaryTree<T>;
 public:
 	T data;
-	int check;
 	BinaryTree<T> *left;
 	BinaryTree<T> *right;
 public:
 	Node(T data, BinaryTree<T>* left = NULL, BinaryTree<T>* right = NULL)
 	{
 		this->data = data;
-		check = 1;
 		this->left = left;
 		this->right = right;
 	}
@@ -504,6 +502,7 @@ BinaryTree<T>* BinaryTree<T>::Rebalance(BinaryTree<T> **pRoot)
 }
 /////////////AVL 트리 기능 추가//////////////////////////////////////////////////////////////////////////////////////////////
 
+/////////////main///////////////////////////////////////////////////////////////////////////////////////////////////////////
 int main(void)
 {
 	BinaryTree<int> *bstRoot = new BinaryTree<int>();
