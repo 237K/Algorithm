@@ -140,6 +140,5 @@ int main(void)
 	p3 = Delete(&T, 20120003);
 	p3 = Delete(&T, 20092455);
 
-
 	return 0;
 }
