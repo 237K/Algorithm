@@ -19,142 +19,126 @@
 #include <string>
 using namespace std;
 
-const static int LENGTH = 50;
 const static int TABLE_SIZE = 100;
 typedef int HashFunc(int k);
 
 enum SlotStatus {EMPTY, DELETED, INUSE};
 
-
-class Person
+typedef struct _person
 {
-private:
 	int ssn;
 	string name;
-	string address;
-public:
-	Person(int _ssn = 0, string _name = NULL, string _add = NULL) : ssn(ssn)
-	{
-		name = _name;
-		address = _add;
-	}
-	Person& operator= (const Person& p)
-	{
-		ssn = p.ssn;
-		name = p.name;
-		address = p.address;
-		return *this;
-	}
-	void MakePersonData(int _ssn, string _name, string _add)
-	{
-		ssn = _ssn;
-		name = _name;
-		address = _add;
-	}
-	int GetSSN()
-	{
-		return ssn;
-	}
-	friend ostream& operator<< (ostream& os, const Person& p);
-};
+	string add;
+} Person;
 
-ostream& operator<< (ostream& os, const Person& p)
+static int GetSSN(Person *p)
 {
-	os << "이름 : " << p.name << endl;
-	os << "주민등록번호 : " << p.ssn << endl;
-	os << "주소 : " << p.ssn << endl << endl;
-	return os;
+	return p->ssn;
 }
 
-class Slot
+static void ShowPersonInfo(Person *p)
 {
-public:
-	int Key;
-	Person person;
-	SlotStatus status;
-public:
-	Slot(int _ssn = 0, string _name = NULL, string _add = NULL, int key = 0) : Key(key), person(_ssn, _name, _add), status(EMPTY) {}
-	friend ostream& operator<< (ostream& os, const Slot& s);
-};
-
-ostream& operator<< (ostream& os, const Slot& s)
-{
-	os << s.person << endl;
-	return os;
+	cout << "이름 : " << p->name << endl;
+	cout << "주민등록번호 : " << p->ssn << endl;
+	cout << "주소 : " << p->add << endl << endl;
 }
 
-class Table
+static Person* MakePersonData(int ssn, string name, string add)
 {
-private:
+	Person *p = new Person();
+	p->ssn = ssn;
+	p->name = name;
+	p->add = add;
+	return p;
+}
+
+
+typedef int Key;
+typedef Person* Value;
+
+typedef struct _slot
+{
+	Key key;
+	Value value;
+	enum SlotStatus status;
+} Slot;
+
+
+typedef struct _table
+{
 	Slot table[TABLE_SIZE];
 	HashFunc *HF;
-public:
-	Table(int _ssn = 0, string _name = NULL, string _add = NULL, int key = 0, HashFunc *f = NULL)
-	{
-		HF = f;
-		for (int i = 0; i < TABLE_SIZE; ++i)
-		{
-			int hv = f(i);
-			table[hv](_ssn, _name, _add, key);
-		}
-	}
-	void Insert(int key, Person p)
-	{
-		int HV = HF(key);
-		table[HV].Key = key;
-		table[HV].person = p;
-		table[HV].status = INUSE;
-	}
-	Person Delete(int key)
-	{
-		int HV = HF(key);
-		if (table[HV].status != INUSE)
-			return NULL;
-		else
-		{
-			table[HV].status = DELETED;
-			return table[HV].person;
-		}
-	}
-	Person Search(int key)
-	{
-		int HV = HF(key);
-		if (table[HV].status != INUSE)
-			return NULL;
-		else
-			return table[HV].person;
-	}
-};
+} Table;
 
-int hashfunc(int k)
+static void Init(Table *t, HashFunc *f)
+{
+	for (int i = 0; i < TABLE_SIZE; ++i)
+		(t->table[i]).status = EMPTY;
+
+	t->HF = f;
+}
+
+static void Insert(Table *t, Key k, Value v)
+{
+	int hv = t->HF(k);
+	(t->table[hv]).value = v;
+	(t->table[hv]).key = k;
+	(t->table[hv]).status = INUSE;
+}
+
+static Value Delete(Table *t, Key k)
+{
+	int hv = t->HF(k);
+
+	if ((t->table[hv]).status != INUSE)
+		return NULL;
+	else
+	{
+		(t->table[hv]).status = DELETED;
+		return (t->table[hv]).value;
+	}
+}
+
+static Value Search(Table *t, Key k)
+{
+	int hv = t->HF(k);
+	if ((t->table[hv]).status != INUSE)
+		return NULL;
+	else
+		return (t->table[hv]).value;
+}
+
+int MyHashFunc(int k)
 {
 	return k % 100;
 }
 
 int main(void)
 {
-	Table T(hashfunc);
-	Person p1;
-	Person p2;
-	Person p3;
+	Table T;
+	Init(&T, MyHashFunc);
 
-	p1.MakePersonData(20120003, "LEE", "Seoul");
-	p2.MakePersonData(20130012, "KIM", "Pusan");
-	p3.MakePersonData(20092455, "HYEONG", "Seoul");
+	Person *p1;
+	Person *p2;
+	Person *p3;
 
-	T.Insert(p1.GetSSN(), p1);
-	T.Insert(p2.GetSSN(), p2);
-	T.Insert(p3.GetSSN(), p3);
+	p1 = MakePersonData(20120003, "LEE", "Seoul");
+	Insert(&T, GetSSN(p1), p1);
+	p1 = MakePersonData(20092455, "HYEONG", "Seoul");
+	Insert(&T, GetSSN(p1), p1);
+	p1 = MakePersonData(20140712, "KIM", "Pusan");
+	Insert(&T, GetSSN(p1), p1);
 
-	Person pc1;
-	Person pc2;
-	Person pc3;
+	p2 = Search(&T, 20092455);
+	ShowPersonInfo(p2);
+	p2 = Search(&T, 20120003);
+	ShowPersonInfo(p2);
+	p2 = Search(&T, 20140712);
+	ShowPersonInfo(p2);
 
-	pc1 = T.Search(20120003);
-	pc2 = T.Search(20130012);
-	pc3 = T.Search(20092455);
-
-	cout << pc1 << pc2 << pc3;
+	p3 = Delete(&T, 20140712);
+	p3 = Delete(&T, 20120003);
+	p3 = Delete(&T, 20092455);
 
 
 	return 0;
